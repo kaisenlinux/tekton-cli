@@ -1,0 +1,5 @@
+tekton-cli (0.35.0-1kaisen) kaisen-packages; urgency=medium
+
+  * Initial release
+
+ -- Kevin Chevreuil - Kaisen <kaisen@kaisenlinux.org>  Thu, 08 Feb 2024 19:52:29 +0100

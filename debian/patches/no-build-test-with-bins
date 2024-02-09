@@ -1,0 +1,13 @@
+Author: Kevin Chevreuil - Kaisen <kaisen@kaisenlinux.org>
+
+--- tekton-cli-0.35.0.orig/Makefile
++++ tekton-cli-0.35.0/Makefile
+@@ -44,7 +44,7 @@ ifneq ($(FLAGS),)
+ 	LDFLAGS := -ldflags "$(FLAGS)"
+ endif
+ 
+-all: bin/tkn test
++all: bin/tkn
+ 
+ FORCE:
+ 

@@ -1,0 +1,108 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: cli-release-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+  params:
+    - name: url
+      description: git url to clone
+    - name: revision
+      description: revision branch to checkout
+    - name: package
+      description: package to release
+      default: github.com/tektoncd/cli
+    - name: github-token-secret
+      description: name of the secret holding the github-token
+      default: bot-token-github
+    - name: github-token-secret-key
+      description: name of the key for the secret holding the github-token
+      default: bot-token
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.url)
+        - name: revision
+          value: $(params.revision)
+        - name: deleteExisting
+          value: "true"
+    - name: get-versions
+      runAfter: [fetch-repository]
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: package
+          value: $(params.package)
+      taskRef:
+        name: get-versions
+    - name: lint
+      runAfter: [get-versions]
+      taskRef:
+        name: golangci-lint
+      params:
+        - name: package
+          value: $(params.package)
+        - name: flags
+          value: "-v --timeout 20m"
+        - name: version
+          value: v1.55.2
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: unit-tests
+      runAfter: [lint]
+      taskRef:
+        name: golang-test
+      params:
+        - name: package
+          value: $(params.package)
+        - name: packages
+          value: ./pkg/... ./cmd/...
+        - name: version
+          value: "1.20"
+        - name: flags
+          value: -v -mod=vendor
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: build
+      runAfter: [lint]
+      taskRef:
+        name: golang-build
+      params:
+        - name: package
+          value: $(params.package)
+        - name: version
+          value: "1.20"
+        - name: flags
+          value: -v -mod=vendor
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: release
+      runAfter: [build, unit-tests]
+      taskRef:
+        name: goreleaser
+      params:
+        - name: package
+          value: $(params.package)
+        - name: github-token-secret
+          value: $(params.github-token-secret)
+        - name: github-token-secret-key
+          value: $(params.github-token-secret-key)
+        - name: image
+          value: goreleaser/goreleaser:v1.23.0
+        - name: flags
+          value: --timeout=60m
+      workspaces:
+        - name: source
+          workspace: shared-workspace

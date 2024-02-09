@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+export GOPATH=$(CURDIR)/_build
+
+%:
+	dh $@ --buildsystem=golang --builddirectory=_build
+
+override_dh_auto_clean:
+	rm -rf $(CURDIR)/_build $(CURDIR)/bin
+
+override_dh_auto_build:
+	make
+
+override_dh_auto_test:
+	make test
+
+override_dh_dwz:
+
+override_dh_auto_install:
+	install -p -m 0644 $(CURDIR)/debian/tekton-cli.png $(CURDIR)/debian/tekton-cli/usr/share/pixmaps
+	install -p -m 0755 $(CURDIR)/bin/tkn $(CURDIR)/debian/tekton-cli/usr/bin
+	$(CURDIR)/debian/tekton-cli/usr/bin/tkn completion bash > $(CURDIR)/debian/tekton-cli/usr/share/bash-completion/completions/tkn
+	$(CURDIR)/debian/tekton-cli/usr/bin/tkn completion zsh > $(CURDIR)/debian/tekton-cli/usr/share/zsh/vendor-completions/_tkn
