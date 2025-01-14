@@ -1,3 +1,10 @@
+tekton-cli (0.39.0-1kaisen) kaisen-packages; urgency=medium
+
+  * Import the 0.39.0 release
+  * Bump the golang-go version required to build
+
+ -- Kevin Chevreuil - Kaisen <kaisen@kaisenlinux.org>  Tue, 14 Jan 2025 13:22:10 +0200
+
 tekton-cli (0.37.0-1kaisen) kaisen-packages; urgency=medium
 
   * Import the 0.37.0 release

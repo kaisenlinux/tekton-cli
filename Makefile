@@ -11,7 +11,8 @@ M = $(shell printf "\033[34;1m🐱\033[0m")
 TIMEOUT_UNIT = 5m
 TIMEOUT_E2E  = 20m
 
-GOLANGCI_VERSION = v1.58.0
+# Get golangci_version from tools/go.mod to eliminate the manual bump
+GOLANGCI_VERSION = $(shell cat tools/go.mod | grep golangci-lint | awk '{ print $$3 }')
 
 YAML_FILES := $(shell find . -type f -regex ".*y[a]ml" -print)
 
@@ -105,7 +106,7 @@ lint-go: | $(GOLANGCILINT) ; $(info $(M) running golangci-lint…) @ ## Run gola
 
 GOIMPORTS = $(BIN)/goimports
 $(GOIMPORTS): ; $(info $(M) getting goimports )
-	GOBIN=$(BIN) $(GO) install -mod=mod golang.org/x/tools/cmd/goimports
+	GOBIN=$(BIN) $(GO) install -mod=mod golang.org/x/tools/cmd/goimports@latest
 
 .PHONY: goimports
 goimports: | $(GOIMPORTS) ; $(info $(M) running goimports…) ## Run goimports
