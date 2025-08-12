@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Kevin Chevreuil - Kaisen <kaisen@kaisenlinux.org>
 Rules-Requires-Root: no
 Build-Depends:
- debhelper-compat (= 13), golang-go (>= 1.22.8), dh-golang
+ debhelper-compat (= 13), golang-go (>= 1.24), dh-golang
 Standards-Version: 4.7.2
 Homepage: https://tekton.dev/
 Vcs-Browser: https://gitlab.com/kaisenlinux/packages/tekton-cli

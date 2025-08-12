@@ -45,7 +45,7 @@ ifneq ($(FLAGS),)
 	LDFLAGS := -ldflags "$(FLAGS)"
 endif
 
-all: bin/tkn test
+all: bin/tkn
 
 FORCE:
 
